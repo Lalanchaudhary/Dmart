@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Icon2 from 'react-native-vector-icons/AntDesign';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Delete from 'react-native-vector-icons/MaterialCommunityIcons';
 import Plus from 'react-native-vector-icons/AntDesign';
@@ -18,7 +18,6 @@ const Cart = () => {
       const value = await AsyncStorage.getItem('item_data2');
       if (value !== null) {
         const parsedData = JSON.parse(value);
-
         // Initialize quantities for each item
         const updatedData = parsedData.map(item => ({ ...item, quantity: 1 }));
         setItemData(updatedData);
@@ -38,10 +37,11 @@ const Cart = () => {
     setTotalPrice(totalItemPrice);
   };
 
-  useEffect(() => {
-    getValueFunction();
-  }, []);
-
+  useFocusEffect(
+    React.useCallback(() => {
+      getValueFunction();
+    }, [])
+  );
   const AddHandle = (item) => {
     const updatedData = itemData.map(dataItem => {
       if (dataItem.id === item.id) {
@@ -231,7 +231,12 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     fontWeight: 'bold'
-  }
+  },
+  noItemText:{
+    textAlign:'center',
+    fontSize:25,
+    fontWeight:'bold',
+    marginVertical:200 }
 });
 
 export default Cart;

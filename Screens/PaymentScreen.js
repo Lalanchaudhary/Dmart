@@ -2,65 +2,69 @@ import React, { useState } from 'react';
 import { Alert, Image, Text, TouchableOpacity, View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, TextInput } from 'react-native';
 import { useStripe, StripeProvider, CardField } from '@stripe/stripe-react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import Card1 from '../Assets/card21.png'; 
+import Card1 from '../Assets/card21.png';
+import Icon2 from 'react-native-vector-icons/AntDesign'
 import { useNavigation, useRoute } from '@react-navigation/native';
 const PaymentScreen = () => {
-    const navigation=useNavigation();
-    const route=useRoute();
-    console.log(route)
-    const {totalPrice}=route.params;
-    // const totalPrice=500;
+  const navigation = useNavigation();
+  const route = useRoute();
+  console.log(route)
+  const { totalPrice } = route.params;
+  const amount = Math.round(totalPrice);
   const { confirmPayment } = useStripe();
   const [cardDetails, setCardDetails] = useState(null);
-  const [name,setName]=useState('');
-  const [email,setEmail]=useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
 
   const handlePayment = async () => {
-    if (!cardDetails?.complete) {
-      Alert.alert('Error', 'Please enter complete card details.');
-      return;
-    }
 
-    try {
-      const billingDetails = {
-        email:email,
-        name:name,
-      };
+    Alert.alert('payment success')
+    navigation.navigate('Order')
+    // if (!cardDetails?.complete) {
+    //   Alert.alert('Error', 'Please enter complete card details.');
+    //   return;
+    // }
 
-      const response = await fetch('http://192.168.0.88:3000/create-payment-intent', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ amount: totalPrice }),
-      });
+    // try {
+    //   const billingDetails = {
+    //     email: email,
+    //     name: name,
+    //   };
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok.');
-      }
+    //   const response = await fetch('http://192.168.0.88:3000/create-payment-intent', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({ amount: amount }),
+    //   });
 
-      const { clientSecret } = await response.json();
+    //   if (!response.ok) {
+    //     throw new Error('Network response was not ok.');
+    //   }
 
-      const { error, paymentIntent } = await confirmPayment(clientSecret, {
-        paymentMethodType: 'Card',
-        paymentMethod: {
-          card: cardDetails,
-          billingDetails,
-        },
-      });
+    //   const { clientSecret } = await response.json();
 
-      if (error) {
-        console.error('Payment failed:', error.message);
-        Alert.alert('Payment Error', error.message);
-      } else {
-        console.log('Payment Successful', paymentIntent);
-        Alert.alert('Success', 'Payment Successful');
-        navigation.navigate('Order')
-      }
-    } catch (error) {
-      console.error('Payment Error', error);
-      Alert.alert('Payment Error', 'An unexpected error occurred.');
-    }
+    //   const { error, paymentIntent } = await confirmPayment(clientSecret, {
+    //     paymentMethodType: 'Card',
+    //     paymentMethod: {
+    //       card: cardDetails,
+    //       billingDetails,
+    //     },
+    //   });
+
+    //   if (error) {
+    //     console.error('Payment failed:', error.message);
+    //     Alert.alert('Payment Error', error.message);
+    //   } else {
+    //     console.log('Payment Successful', paymentIntent);
+    //     Alert.alert('Success', 'Payment Successful');
+    //     navigation.navigate('Order')
+    //   }
+    // } catch (error) {
+    //   console.error('Payment Error', error);
+    //   Alert.alert('Payment Error', 'An unexpected error occurred.');
+    // }
   };
 
   return (
@@ -69,16 +73,19 @@ const PaymentScreen = () => {
       style={styles.container}
     >
       <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps='handled'>
+      <TouchableOpacity style={styles.backIcon} onPress={()=>{navigation.goBack()}}>
+                <Icon2 name='arrowleft' size={22} color={'#19253d'} />
+            </TouchableOpacity>
         <Image source={Card1} style={styles.cardImage} />
         <View style={styles.cardContainer}>
-        <View style={{ marginVertical: 30, height: 45 }}>
+          <View style={{ marginVertical: 30, height: 45 }}>
             <Text>CARD HOLDER NAME</Text>
-            <TextInput style={styles.NameInput} value={name}  onChangeText={(value)=>setName(value)}/>
+            <TextInput style={styles.NameInput} value={name} onChangeText={(value) => setName(value)} />
           </View>
 
           <View style={{ marginVertical: 30, height: 45 }}>
             <Text>ENTER YOUR EMAIL</Text>
-            <TextInput style={styles.NameInput} value={email} onChangeText={(value)=>{setEmail(value)}}  />
+            <TextInput style={styles.NameInput} value={email} onChangeText={(value) => { setEmail(value) }} />
           </View>
 
           <Text style={{ color: 'grey' }}>CREDIT CARD NUMBER</Text>
@@ -127,10 +134,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f2ff',
     // alignItems:'center'
   },
+  backIcon: {
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#efeeee',
+    margin:20
+    // position:'absolute',
+    // left:20,
+    // top:10
+},
   cardImage: {
-    margin: 0,
+    marginTop:-30,
+    // marginBottom: -20,
     width: 400,
-    marginLeft:7
+    marginLeft: 7
   },
   cardContainer: {
     height: 500,

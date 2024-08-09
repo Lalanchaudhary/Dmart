@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Icon2 from 'react-native-vector-icons/AntDesign';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Delete from 'react-native-vector-icons/MaterialCommunityIcons';
 import Plus from 'react-native-vector-icons/AntDesign';
@@ -38,9 +38,11 @@ const Order = () => {
     setTotalPrice(totalItemPrice);
   };
 
-  useEffect(() => {
-    getValueFunction();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      getValueFunction();
+    }, [])
+  );
 
   const AddHandle = (item) => {
     const updatedData = itemData.map(dataItem => {

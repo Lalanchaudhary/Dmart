@@ -32,6 +32,7 @@ const Signup = () => {
     console.log('Password:', password); // Log the password
     try {
       const userCredential = await auth().signInWithEmailAndPassword(email, password);
+      navigation.navigate('Display')
       console.log('signInWithEmail:success');
     } catch (e) {
       console.warn('signInWithEmail:failure', e);

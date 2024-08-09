@@ -8,19 +8,25 @@ import Home from './Screens/Home'
 import Display from './Screens/Display'
 import ProductDetails from './Screens/ProductDetails'
 import PaymentScreen from './Screens/PaymentScreen'
+import FirstScreen from './Screens/FirstScreen'
 const App = () => {
   const Stack = createStackNavigator();
   return (
     <NavigationContainer>
       <Stack.Navigator>
-      <Stack.Screen name='Display' component={Display} options={{
-          headerShown:false
-        }}/>
+      <Stack.Screen name='first' component={FirstScreen} options={
+          {
+            headerShown: false
+          }
+        } />
         <Stack.Screen name='signup' component={Signup} options={
           {
             headerShown: false
           }
         } />
+              <Stack.Screen name='Display' component={Display} options={{
+          headerShown:false
+        }}/>
         <Stack.Screen name='login' component={Login} options={{
           headerShown: false
         }} />

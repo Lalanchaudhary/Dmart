@@ -2,6 +2,7 @@ import { Image, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View }
 import React from 'react'
 import { Formik, formik } from 'formik'
 import * as yup from 'yup'
+import auth from '@react-native-firebase/auth';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Icon2 from 'react-native-vector-icons/AntDesign'
 import google from '../Assets/google.png'
@@ -23,6 +24,20 @@ const Login = () => {
             .oneOf([yup.ref('password')], 'password do not match')
             .required('Confirm password is required')
     })
+
+    const handleSignIn = async (email, password) => {
+        console.log('Email:', email); // Log the email
+        console.log('Password:', password); // Log the password
+        try {
+          const userCredential = await auth().signInWithEmailAndPassword(email, password);
+          navigation.navigate('Display')
+          console.log('signInWithEmail:success');
+        } catch (e) {
+          console.warn('signInWithEmail:failure', e);
+        }
+      };
+
+      
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.backIcon} onPress={()=>{navigation.goBack()}}>
@@ -57,8 +72,8 @@ const Login = () => {
                         </View>
                         {errors.password && <Text style={styles.errors}>{errors.password}</Text>}
                         <Text style={styles.forget}>Forget Password?</Text>
-                        <TouchableOpacity style={styles.signup_btn}>
-                            <Text style={styles.btn_text}>Sign up</Text>
+                        <TouchableOpacity style={styles.signup_btn} onPress={handleSignIn}>
+                            <Text style={styles.btn_text}>Sign in</Text>
                         </TouchableOpacity>
                         <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 16 }}>Or continue with</Text>
                         <TouchableOpacity style={[styles.another_btn, { marginTop: 33 }]}>
